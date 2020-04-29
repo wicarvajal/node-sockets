@@ -1,5 +1,3 @@
-// import { io } from "../../server/server";
-
 var socket = io();
 var label = $('#lblNuevoTicket')
 

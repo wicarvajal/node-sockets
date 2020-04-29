@@ -9,11 +9,32 @@ io.on('connection', (client) => {
   client.on('nextTicket', (data, callback) => {
     let next = ticketControl.nextTicket();
     callback(next);
-  })
+  });
 
   client.emit('currentState', {
-    currentTicket: ticketControl.getLastTicket()
-  })
+    currentTicket: ticketControl.getLastTicket(),
+    lastFour: ticketControl.getLastFour()
+  });
+
+  client.on('attendTicket', (data, callback) => {
+    console.log(data.desk);
+    if(!data.desk){
+      return callback({
+        err: true,
+        msg: 'Escritorio es necesario'
+      });
+    }
+
+    let attendTicket = ticketControl.attendTicket(data.desk);
+
+    callback(attendTicket);
+
+    // Actualizar notificar cambios en los ultimos 4
+
+    client.broadcast.emit('updateLastFour', {
+      lastFour: ticketControl.getLastFour()
+    });
+  });
 
   // client.emit('sendMessage', {
   //   user: 'admin',
